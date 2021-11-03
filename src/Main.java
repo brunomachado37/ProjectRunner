@@ -1,21 +1,35 @@
-// add any usefull package line
-
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import java.lang.management.MonitorInfo;
 
 public class Main extends Application{
 
+    @Override
     public void start(Stage primaryStage){
-        primaryStage.setTitle("Demo");
+        primaryStage.setTitle("First Stage");
         Group root = new Group();
-        Scene scene = new Scene(root, 600, 400);
+        Pane pane = new Pane(root);
+
+        GameScene scene = new GameScene(pane, 600, 400);
+
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        MovingThing hero = new MovingThing(0, 0,"..\\img\\heros.png", 20, 0, 100, 50);
-        //root.getChildren().add(hero.getSprite());
+        root.getChildren().add(scene.getLeftBg().getSprite());
+        root.getChildren().add(scene.getRightBg().getSprite());
+        root.getChildren().add(scene.getLives().getSprite());
+        root.getChildren().add(scene.getHero().getSprite());
+        for (Foe foe : scene.getFoes()) {
+            root.getChildren().add(foe.getSprite());
+        }
+
+        //root.getChildren().add(scene.getFoes().get(0).getSprite());
+
     }
     public static void main(String[] args) {
         launch(args);
