@@ -11,7 +11,7 @@ public class Foe extends MovingThing{
         offset[3] = 384;
 
         this.setOffset(offset);
-        this.setMaxAnimationIndex(offset.length - 1);
+        super.setMaxAnimationIndex(offset.length - 1);
     }
 
     public void update(){

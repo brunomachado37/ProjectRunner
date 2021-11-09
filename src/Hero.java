@@ -3,16 +3,13 @@ import javafx.geometry.Rectangle2D;
 public class Hero extends MovingThing {
 
     // X axis variables
-    private double ax;                  // Acceleration
     private double vx = 500;            // Speed
-    private double pvx = 0;             // Previous Speed
-    private double dvx;                 // Speed variation
     private double px;                  // Previous position
     private double dx;                  // Position variation
     private static double dt = 0.016;   // Time variation
 
     // Y axis variables
-    private double g = 2000;            // Gravity
+    private static double g = 2000;     // Gravity
     private double ay = 0;              // Acceleration
     private double vy;                  // Speed
     private double pvy = 0;             // Previous Speed
@@ -42,7 +39,7 @@ public class Hero extends MovingThing {
         offset[5] = 424;
 
         this.setOffset(offset);
-        this.setMaxAnimationIndex(offset.length - 1);
+        super.setMaxAnimationIndex(offset.length - 1);
     }
 
     public void jump() {
@@ -97,11 +94,7 @@ public class Hero extends MovingThing {
     }
 
     public boolean isNotInvincible() {
-        if (invincibility > 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(invincibility > 0);
     }
 
     public void setInvincibility(double invincibility) {

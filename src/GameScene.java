@@ -1,7 +1,8 @@
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Parent;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -17,33 +18,36 @@ public class GameScene extends Scene{
     private Hero hero;
     private ArrayList<Foe> foes;
     private Integer numberOfFoes;
+    private Stage stage;
+    private AnimationTimer timer;
 
 
-    public GameScene(Parent root, Integer w, Integer h) {
+    public GameScene(Group root, Integer w, Integer h, Stage stage) {
         super(root, w, h);
 
         this.leftBg = new NotMovingThing("desert.png", 0, 0, 800, 400);
         this.rightBg = new NotMovingThing("desert.png", 800, 0, 800, 400);
 
         this.lives = new NotMovingThing("3hearts.png", 10, 10, 204, 50);
+        this.stage = stage;
 
         this.hero = new Hero(0, 240, "heroes.png", 8, 0, 80, 100);
         this.cam = new Camera(300, 0, this.hero);
 
-        this.foes = new ArrayList<Foe>();
+        this.foes = new ArrayList<>();
         Integer FoeX = 2000;
         Random r = new Random();
 
-        this.numberOfFoes = ThreadLocalRandom.current().nextInt(10, 21);
+        this.numberOfFoes = ThreadLocalRandom.current().nextInt(10, 21);    // Random integer between 10 and 20
         for (Integer f = 0; f <= numberOfFoes; f++){
-            double offset = 1 + (3 - 1) * r.nextDouble();               // Random double between 1 and 3
-            offset = offset*400;
+            double offset = 1 + (3 - 1) * r.nextDouble();                               // Random double between 1 and 3
+            offset = offset*400;                                                        // Minimum distance between foes = 400
             FoeX = FoeX + (int) offset;
             this.foes.add(new Foe(FoeX, 260, "jinn.png", 0, 0, 50, 80));
         }
 
 
-        AnimationTimer timer = new AnimationTimer() {
+        this.timer = new AnimationTimer() {
             public void handle(long time){
                 hero.update(time);
                 for (Foe foe: foes) {
@@ -54,11 +58,19 @@ public class GameScene extends Scene{
                 }
         };
 
-        this.setOnMouseClicked( (event)->{
-            hero.jump();
-        });
+        this.setOnMouseClicked( (event) -> hero.jump());
 
         timer.start();
+
+
+        root.getChildren().add(this.leftBg.getSprite());
+        root.getChildren().add(this.rightBg.getSprite());
+        root.getChildren().add(this.lives.getSprite());
+        root.getChildren().add(this.hero.getSprite());
+        for (Foe foe : this.foes) {
+            root.getChildren().add(foe.getSprite());
+        }
+
 
     }
 
@@ -85,9 +97,14 @@ public class GameScene extends Scene{
             }
         }
 
-        if (this.hero.getX() > this.foes.get(numberOfFoes).getX() + 1000){
-            System.out.println("You Won!");
-            // CALL WIN GAME
+        if ((this.hero.getX() > this.foes.get(numberOfFoes).getX() + 1000) && (this.numberOfLives > 0)){
+
+            // Call Win Game
+            this.timer.stop();
+            Group root2 = new Group();
+            WinGameScene game = new WinGameScene(root2, 600, 400, this.stage);
+            this.stage.setScene(game);
+            this.stage.show();
         }
 
     }
@@ -96,28 +113,12 @@ public class GameScene extends Scene{
         this.numberOfLives--;
 
         if (this.numberOfLives == 0) {
-            System.out.println("Game Over!");
-            // CALL LOSE GAME
+            // Call Game Over
+            this.timer.stop();
+            Group root2 = new Group();
+            GameOverScene game = new GameOverScene(root2, 600, 400, this.stage);
+            this.stage.setScene(game);
+            this.stage.show();
         }
-    }
-
-    public NotMovingThing getLeftBg() {
-        return leftBg;
-    }
-
-    public NotMovingThing getLives() {
-        return lives;
-    }
-
-    public NotMovingThing getRightBg() {
-        return rightBg;
-    }
-
-    public Hero getHero() {
-        return hero;
-    }
-
-    public ArrayList<Foe> getFoes() {
-        return foes;
     }
 }
