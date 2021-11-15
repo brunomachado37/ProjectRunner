@@ -35,13 +35,13 @@ public class GameScene extends Scene{
         this.cam = new Camera(300, 0, this.hero);
 
         this.foes = new ArrayList<>();
-        Integer FoeX = 2000;
+        Integer FoeX = 2000;                                                            // Starting x position for the foes
         Random r = new Random();
 
         this.numberOfFoes = ThreadLocalRandom.current().nextInt(10, 21);    // Random integer between 10 and 20
         for (Integer f = 0; f <= numberOfFoes; f++){
             double offset = 1 + (3 - 1) * r.nextDouble();                               // Random double between 1 and 3
-            offset = offset*400;                                                        // Minimum distance between foes = 400
+            offset = offset*400;                                                        // Minimum distance between 2 foes = 400
             FoeX = FoeX + (int) offset;
             this.foes.add(new Foe(FoeX, 260, "jinn.png", 0, 0, 50, 80));
         }
@@ -70,8 +70,6 @@ public class GameScene extends Scene{
         for (Foe foe : this.foes) {
             root.getChildren().add(foe.getSprite());
         }
-
-
     }
 
     private void render(){
